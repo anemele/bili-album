@@ -1,35 +1,37 @@
-import hashlib
+""" SQLite 数据库相关操作 """
+from pathlib import Path
 import sqlite3
+from typing import Union
+
+from .utils import hash_str
+
+sql_create_items = '''CREATE TABLE IF NOT EXISTS "items" (
+"ctime"	INTEGER NOT NULL,
+"desc"	TEXT,
+"pid"	TEXT NOT NULL
+);'''
+sql_create_pics = '''CREATE TABLE IF NOT EXISTS "pics" (
+"pid"	TEXT NOT NULL,
+"src"	TEXT NOT NULL,
+"width"	INTEGER NOT NULL,
+"height"	INTEGER NOT NULL,
+"size"	NUMERIC NOT NULL,
+"valid"	INTEGER NOT NULL
+);'''
 
 
 class Connect:
-    """Save data to sqlite3 database."""
-
-    sql_create_items = '''CREATE TABLE IF NOT EXISTS "items" (
-    "ctime"	INTEGER NOT NULL,
-    "desc"	TEXT,
-    "pid"	TEXT NOT NULL
-    );'''
-    sql_create_pics = '''CREATE TABLE IF NOT EXISTS "pics" (
-    "pid"	TEXT NOT NULL,
-    "src"	TEXT NOT NULL,
-    "width"	INTEGER NOT NULL,
-    "height"	INTEGER NOT NULL,
-    "size"	NUMERIC NOT NULL,
-    "valid"	INTEGER NOT NULL
-    );'''
-
-    def __init__(self, database: str):
+    def __init__(self, database: Union[Path, str]):
         self.database = database
         self.connect = sqlite3.connect(database)
         self.cursor = self.connect.cursor()
 
     def create_tables(self):
-        self.cursor.execute(self.sql_create_items)
-        self.cursor.execute(self.sql_create_pics)
+        self.cursor.execute(sql_create_items)
+        self.cursor.execute(sql_create_pics)
 
     def insert_item(self, data: dict):
-        pid = self._hex_digest(data['ctime'])
+        pid = hash_str(data['ctime'])
         self.cursor.execute(
             'insert into items values(?,?,?)', (data['ctime'], data['description'], pid)
         )
@@ -44,11 +46,6 @@ class Connect:
     def insert_items(self, data: list):
         for d in data:
             self.insert_item(d)
-
-    @staticmethod
-    def _hex_digest(sth):
-        _hash = hashlib.sha1(bytes(str(sth), 'ascii'))
-        return _hash.hexdigest()
 
     def _select_and_fetch_one(self, sql):
         self.cursor.execute(sql)

@@ -1,2 +1,9 @@
+# generated directory
+.vscode
 __pycache__
+
+# private toml config
 toml/
+
+# some batch scripts that not public
+*.bat

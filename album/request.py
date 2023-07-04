@@ -1,17 +1,22 @@
 import random
+from typing import Optional
 
-from faker import Faker
-from requests import Session
+from requests import Session, Response
 
-__all__ = ['request']
-session = Session()
-faker = Faker()
-user_agent_list = [faker.user_agent() for _ in range(10)]
+from .constants import UA_LIST, REQ_BOUND
+
+_session = Session()
+_request_counter = 0
+_headers = {'user-agent': random.choice(UA_LIST)}
 
 
-def request(url):
-    headers = {'user-agent': random.choice(user_agent_list)}
-    response = session.get(url, headers=headers)
+def request(url: str) -> Optional[Response]:
+    global _request_counter
+    response = _session.get(url, headers=_headers)
+    _request_counter += 1
+    if _request_counter == REQ_BOUND:
+        _request_counter = 0
+        _headers['user-agent'] = random.choice(UA_LIST)
     if response.status_code == 200:
         return response
     if response.status_code == 404:
