@@ -71,7 +71,8 @@ class Download:
     def run(self):
         count = 0
         count_saved = 0
-        for count, url in enumerate(self.save_data()):
+        for url in self.save_data():
+            count += 1
             save_name = self._save_path / Path(url).name
             if save_name.exists():
                 print(f'[WARNING] Exists  {save_name}')
@@ -84,6 +85,7 @@ class Download:
                 continue
 
             save_name.write_bytes(response.content)
+            count_saved += 1
             print(f'[INFO] Saved  {count:4d}  {save_name}')
 
             time.sleep(random.random())
