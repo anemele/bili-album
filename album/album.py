@@ -48,6 +48,7 @@ class Download:
             items = json_['data']['items']
             # 解析需要的数据（通常一页是 30 个）并返回
             yield filter_dict(items, ITEM_KEYS)
+            print(f'[INFO] Page\t{page_num} done.')
 
             # 如果当前页图集数量小于 page size，认为到达最后一页，退出循环
             # 一般只有第一次运行才会遇到
@@ -55,7 +56,6 @@ class Download:
                 print('[INFO] Page end')
                 break
             page_num += 1
-            print(f'[INFO] get page {page_num}')
 
     def save_data(self):
         last_ctime = self._conn.select_newest()
@@ -66,7 +66,8 @@ class Download:
                 break
             self._conn.insert_item(data)
             # 这里将新添加的数据 url 返回给下载器下载
-            yield data['pictures'][0]['img_src']
+            for picture in data['pictures']:
+                yield picture['img_src']
 
     def run(self):
         count = 0
