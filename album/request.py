@@ -1,9 +1,9 @@
 import random
 from typing import Optional
 
-from requests import Session, Response
+from requests import Response, Session
 
-from .constants import UA_LIST, REQ_BOUND
+from .constants import REQ_BOUND, UA_LIST
 
 _session = Session()
 _request_counter = 0

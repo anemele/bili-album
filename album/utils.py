@@ -1,7 +1,6 @@
 """ 存放一些与业务无关的小方法 """
 import hashlib
-
-from typing import Union, Optional, List, Dict, Any, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from .constants import TIME_HASH_METHOD
 

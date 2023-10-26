@@ -1,7 +1,6 @@
 import argparse
 from pathlib import Path
 
-
 from .album import Download
 from .parser import parse_toml
 

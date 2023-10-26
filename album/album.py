@@ -5,7 +5,8 @@ from itertools import chain
 from pathlib import Path
 from typing import Union
 
-from .constants import USER_ALBUM_API as API, PAGE_SIZE, ITEM_KEYS
+from .constants import ITEM_KEYS, PAGE_SIZE
+from .constants import USER_ALBUM_API as API
 from .db import Connect
 from .request import request
 from .utils import filter_dict
