@@ -1,6 +1,7 @@
 # generated directory
 .vscode
-__pycache__
+__pycache__/
+dist/
 
 # private toml config
 toml/
