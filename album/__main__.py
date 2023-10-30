@@ -2,7 +2,7 @@ import argparse
 from pathlib import Path
 
 from .album import Download
-from .parser import parse_toml
+from .parser import parse_config
 
 
 def main():
@@ -14,8 +14,11 @@ def main():
     args_config: Path = args.config
 
     if args_config.is_file():
-        uid, sp, sd = parse_toml(args_config)
-        Download(uid, sp, sd).run()
+        try:
+            config = parse_config(args_config)
+            Download(*config).run()
+        except AssertionError as e:
+            print(e)
     else:
         raise FileNotFoundError(args_config)
 

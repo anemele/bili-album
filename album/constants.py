@@ -1,6 +1,6 @@
 """ 存放 API 、默认设置等常量 """
 
-from faker import Faker
+from fake_useragent import FakeUserAgent
 
 """ API 需要三个参数
 uid 是用户的 uid
@@ -15,9 +15,7 @@ USER_ALBUM_API = (
 
 TIME_HASH_METHOD = 'sha1'
 
-_faker = Faker()
-UA_LIST = [_faker.user_agent() for _ in range(10)]
-REQ_BOUND = 10  # 请求 10 次更换 UA
+UA = FakeUserAgent().random
 
 # 过滤数据所需的 key
 ITEM_KEYS = ('ctime', 'description', 'pictures')

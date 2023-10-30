@@ -4,8 +4,9 @@ from typing import Tuple
 import tomli
 
 
-def parse_toml(toml_file: Path) -> Tuple[str, Path, Path]:
-    config = tomli.load(toml_file.open('rb'))
+def parse_config(config_file: Path) -> Tuple[str, Path, Path]:
+    config = tomli.load(config_file.open('rb'))
+
     uid = config.get('uid')
     assert isinstance(uid, int) or isinstance(uid, str) and uid.isdigit()
     root = config.get('root')
