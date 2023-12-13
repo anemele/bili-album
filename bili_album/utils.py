@@ -1,11 +1,11 @@
 """ 存放一些与业务无关的小方法 """
 import hashlib
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional
 
 from .constants import TIME_HASH_METHOD
 
 
-def hash_str(sth: Union[str, int], encoding: str = 'ascii') -> Optional[str]:
+def hash_str(sth: str | int, encoding: str = 'ascii') -> Optional[str]:
     try:
         bytes_ = bytes(str(sth), encoding=encoding)
     except:
@@ -14,7 +14,7 @@ def hash_str(sth: Union[str, int], encoding: str = 'ascii') -> Optional[str]:
     return method(bytes_).hexdigest()
 
 
-def filter_dict(items: List[Dict[str, Any]], keys: Tuple[str, ...]):
+def filter_dict(items: list[dict[str, Any]], keys: tuple[str, ...]):
     """输入一个字典列表和一个字符串元组，输出一个迭代器，
     仅保留字典中含关键字的数据。
 
