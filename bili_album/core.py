@@ -4,6 +4,7 @@ from pathlib import Path
 
 import aiofiles
 import aiohttp
+from aiohttp.client_exceptions import ClientPayloadError
 from fake_useragent import FakeUserAgent
 
 from .constants import ITEM_KEYS, PAGE_SIZE, api_user_album
@@ -13,7 +14,11 @@ from .utils import filter_dict
 
 
 def new_session():
-    return aiohttp.ClientSession(headers={'user-agent': FakeUserAgent().random})
+    return aiohttp.ClientSession(
+        headers={'user-agent': FakeUserAgent().random},
+        timeout=aiohttp.ClientTimeout(total=600),  # 将超时时间设置为600秒
+        connector=aiohttp.TCPConnector(limit=50),  # 将并发数量降低
+    )
 
 
 async def _request_data(uid: str):
@@ -27,7 +32,11 @@ async def _request_data(uid: str):
                     # 如果响应为空，则退出循环。
                     # TODO（此处应有处理方法）
                     break
-                content = await response.read()
+                try:
+                    content = await response.read()
+                except ClientPayloadError as e:
+                    logger.warning(e)
+                    continue
 
             # 返回结果是 json 形式，取出目标数据
             items = json.loads(content)['data']['items']
@@ -66,6 +75,7 @@ async def _run(uid: str, save_path: Path, conn: Connect):
     async with new_session() as session:
         async for url in _save_data(uid, conn):
             count += 1
+
             save_name = save_path / Path(url).name
             if save_name.exists():
                 logger.debug(f'exists {save_name}')
@@ -78,7 +88,11 @@ async def _run(uid: str, save_path: Path, conn: Connect):
                     # TODO How?
                     continue
 
-                content = await response.read()
+                try:
+                    content = await response.read()
+                except ClientPayloadError as e:
+                    logger.warning(e)
+                    continue
 
             async with aiofiles.open(save_name, 'wb') as fp:
                 await fp.write(content)

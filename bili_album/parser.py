@@ -14,7 +14,7 @@ def parse_config(sth: dict[str, dict[str, Any]]) -> Iterable[T_CONFIG]:
     for name in sth:
         it = sth[name]
         # 设置一个过滤器
-        if it.get('ignore') == 1:
+        if it.get('ignore'):
             continue
 
         uid = it['uid']
