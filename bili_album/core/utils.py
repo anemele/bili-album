@@ -1,6 +1,6 @@
 """ 存放一些与业务无关的小方法 """
 
-from typing import Any
+from typing import Any, Iterable
 
 
 def filter_dict(items: list[dict[str, Any]], keys: tuple[str, ...]):
@@ -13,3 +13,18 @@ def filter_dict(items: list[dict[str, Any]], keys: tuple[str, ...]):
     """
     for item in items:
         yield {key: item[key] for key in keys}
+
+
+# v3.12+ builtin:itertools
+def batched(it: Iterable, n: int):
+    tmp = []
+    count = 0
+    for i in it:
+        tmp.append(i)
+        count += 1
+        if count == n:
+            yield tuple(tmp)
+            tmp.clear()
+            count = 0
+    if len(tmp) > 0:
+        yield tuple(tmp)

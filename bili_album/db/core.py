@@ -2,7 +2,7 @@ from itertools import chain
 from pathlib import Path
 from typing import Any, Iterable
 
-from sqlalchemy import create_engine
+from sqlalchemy import and_, create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from .model import Base, Info, Picture
@@ -62,3 +62,12 @@ class Connect:
             .join(Info, Info.pid == Picture.pid)
             .all()
         )
+
+    def select_newer_than(self, ctime: int):
+        query = (
+            self._session.query(Picture.src)
+            .select_from(Picture)
+            .filter(and_(Picture.pid == Info.pid, Info.ctime > ctime))
+            .all()
+        )
+        return (x[0] for x in query)

@@ -2,11 +2,9 @@ import asyncio
 import json
 from pathlib import Path
 
-import aiohttp
-from fake_useragent import FakeUserAgent
-
+from ..db import Connect
 from .api import PAGE_SIZE, api_user_album
-from .db import Connect
+from .common import LAST_TIME, new_session
 from .log import logger
 from .utils import filter_dict
 
@@ -14,15 +12,7 @@ from .utils import filter_dict
 ITEM_KEYS = ('ctime', 'description', 'pictures')
 
 
-def new_session():
-    return aiohttp.ClientSession(
-        headers={'user-agent': FakeUserAgent().random},
-        timeout=aiohttp.ClientTimeout(total=600),  # 将超时时间设置为600秒
-        connector=aiohttp.TCPConnector(limit=50),  # 将并发数量降低
-    )
-
-
-async def _request_data(uid: str):
+async def request_data(uid: str):
     async with new_session() as session:
         # 从最新的一页（0）开始爬取数据。
         page_num = 0
@@ -51,11 +41,15 @@ async def _request_data(uid: str):
             page_num += 1
 
 
-async def _update(uid: str, conn: Connect):
+async def update(uid: str, database: Path):
+    conn = Connect(database)
+
     last_ctime = conn.select_newest()
+    database.with_suffix(LAST_TIME).write_text(str(last_ctime))
+
     count = 0
     flag = False
-    async for page in _request_data(uid):
+    async for page in request_data(uid):
         tmp = []
         for item in page:
             if item['ctime'] <= last_ctime:
@@ -64,19 +58,14 @@ async def _update(uid: str, conn: Connect):
 
             tmp.append(item)
             count += 1
+
         conn.insert_all(tmp)
         if flag:
-            return count
-
-
-async def _run(uid: str, conn: Connect):
-    count = await _update(uid, conn)
+            break
 
     logger.info(f'done. {count} update.')
 
 
-def run(uid: str, database: Path | str):
-    conn = Connect(database)
-
+def run(uid: str, database: Path):
     logger.info(f'start. uid={uid}, db={database}')
-    asyncio.run(_run(uid, conn))
+    asyncio.run(update(uid, database))
