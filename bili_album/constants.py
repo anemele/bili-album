@@ -16,7 +16,5 @@ def api_user_album(uid: str, page_num: int):
     )
 
 
-TIME_HASH_METHOD = 'sha1'
-
 # 过滤数据所需的 key
 ITEM_KEYS = ('ctime', 'description', 'pictures')

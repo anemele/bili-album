@@ -7,9 +7,7 @@ API 来自浏览器调试：
 
 ## 使用方法
 
-1. 安装依赖 `poetry install` 或者 `pip install -r requirements`
-
-2. 编写 `xxx.toml` 配置，然后 `python -m bili_album xxx.toml`
+编写 `xxx.toml` 配置，然后 `python -m bili_album xxx.toml`
 
 配置示例：
 
