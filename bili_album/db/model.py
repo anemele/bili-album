@@ -5,7 +5,7 @@ Base = declarative_base()
 
 
 class Info(Base):
-    __tablename__ = 'items'
+    __tablename__ = 'info'
     pid = Column('pid', String, nullable=False, primary_key=True)
     ctime = Column('ctime', Integer, nullable=False)
     desc = Column('desc', String)

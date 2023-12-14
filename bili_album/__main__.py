@@ -19,7 +19,7 @@ if not args_config.is_file():
     exit(1)
 
 try:
-    for uid, save_path, db in parse(args_config):
-        run(uid, save_path, db)
+    for uid, db in parse(args_config):
+        run(uid, db)
 except (KeyError, AssertionError) as e:
     logger.error(e)

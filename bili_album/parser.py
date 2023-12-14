@@ -2,7 +2,7 @@ import tomllib
 from pathlib import Path
 from typing import Any, Iterable
 
-T_CONFIG = tuple[str, Path, Path]
+T_CONFIG = tuple[str, Path]
 
 
 def parse(config_file: Path) -> Iterable[T_CONFIG]:
@@ -21,6 +21,6 @@ def parse_config(sth: dict[str, dict[str, Any]]) -> Iterable[T_CONFIG]:
         assert isinstance(uid, int) or isinstance(uid, str) and uid.isdigit()
 
         root = Path(it['root'])
-        db = f'db_{name}.db'
+        db = f'{name}.db'
 
-        yield (str(uid), root / name, root / db)
+        yield (str(uid), root / db)

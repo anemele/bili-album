@@ -1,17 +1,6 @@
 """ 存放一些与业务无关的小方法 """
-import hashlib
-from typing import Any, Optional
 
-from .constants import TIME_HASH_METHOD
-
-
-def hash_str(sth: str | int, encoding: str = 'ascii') -> Optional[str]:
-    try:
-        bytes_ = bytes(str(sth), encoding=encoding)
-    except:
-        return
-    method = getattr(hashlib, TIME_HASH_METHOD, hashlib.sha1)
-    return method(bytes_).hexdigest()
+from typing import Any
 
 
 def filter_dict(items: list[dict[str, Any]], keys: tuple[str, ...]):

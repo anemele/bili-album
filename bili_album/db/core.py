@@ -1,6 +1,6 @@
 from itertools import chain
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -28,16 +28,14 @@ class Connect:
         p = data["pictures"][0]
         return (
             Info(ctime=data["ctime"], desc=data["description"], pid=pid),
-            (
-                Picture(
-                    pid=pid,
-                    src=p["img_src"],
-                    width=p["img_width"],
-                    height=p["img_height"],
-                    size=p["img_size"],
-                    # the valid is of `img_src`, default True, update to False if it is invalid.
-                    valid=True,
-                )
+            Picture(
+                pid=pid,
+                src=p["img_src"],
+                width=p["img_width"],
+                height=p["img_height"],
+                size=p["img_size"],
+                # the valid is of `img_src`, default True, update to False if it is invalid.
+                valid=True,
             ),
         )
 
@@ -45,15 +43,17 @@ class Connect:
         self._session.add_all((self.wrap_data(data)))
         self._session.commit()
 
-    def insert_all(self, data: list[dict[str, Any]]):
+    def insert_all(self, data: Iterable[dict[str, Any]]):
         self._session.add_all(chain.from_iterable(map(self.wrap_data, data)))
         self._session.commit()
 
     def select_newest(self):
         ctime = self._session.query(Info.ctime).order_by(Info.ctime.desc()).first()
+        if ctime is not None:
+            ctime = ctime[0]
         if ctime is None:
-            return
-        return ctime[0]
+            return 0
+        return ctime
 
     def select_desc_src(self):
         return (

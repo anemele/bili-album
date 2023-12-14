@@ -2,15 +2,16 @@ import asyncio
 import json
 from pathlib import Path
 
-import aiofiles
 import aiohttp
-from aiohttp.client_exceptions import ClientPayloadError
 from fake_useragent import FakeUserAgent
 
-from .constants import ITEM_KEYS, PAGE_SIZE, api_user_album
+from .api import PAGE_SIZE, api_user_album
 from .db import Connect
 from .log import logger
 from .utils import filter_dict
+
+# 过滤数据所需的 key
+ITEM_KEYS = ('ctime', 'description', 'pictures')
 
 
 def new_session():
@@ -32,11 +33,8 @@ async def _request_data(uid: str):
                     # 如果响应为空，则退出循环。
                     # TODO（此处应有处理方法）
                     break
-                try:
-                    content = await response.read()
-                except ClientPayloadError as e:
-                    logger.warning(e)
-                    continue
+
+                content = await response.read()
 
             # 返回结果是 json 形式，取出目标数据
             items = json.loads(content)['data']['items']
@@ -53,64 +51,32 @@ async def _request_data(uid: str):
             page_num += 1
 
 
-async def _save_data(uid: str, conn: Connect):
+async def _update(uid: str, conn: Connect):
     last_ctime = conn.select_newest()
-    pages_data = _request_data(uid)
-
-    async for tmp in pages_data:
-        for data in tmp:
-            if data['ctime'] <= last_ctime:
-                logger.info('last end')
-                return
-            conn.insert_item(data)
-            # 这里将新添加的数据 url 返回给下载器下载
-            for picture in data['pictures']:
-                yield picture['img_src']
-
-
-async def _run(uid: str, save_path: Path, conn: Connect):
     count = 0
-    count_saved = 0
+    flag = False
+    async for page in _request_data(uid):
+        tmp = []
+        for item in page:
+            if item['ctime'] <= last_ctime:
+                flag = True
+                break
 
-    async with new_session() as session:
-        async for url in _save_data(uid, conn):
+            tmp.append(item)
             count += 1
-
-            save_name = save_path / Path(url).name
-            if save_name.exists():
-                logger.debug(f'exists {save_name}')
-                continue
-
-            async with session.get(url) as response:
-                if response is None:
-                    # 返回 None 应将数据库 valid 设为 0
-                    # 但可能链接有效，因其它原因返回 None
-                    # TODO How?
-                    continue
-
-                try:
-                    content = await response.read()
-                except ClientPayloadError as e:
-                    logger.warning(e)
-                    continue
-
-            async with aiofiles.open(save_name, 'wb') as fp:
-                await fp.write(content)
-
-            count_saved += 1
-            logger.debug(f'saved {count} {save_name}')
-
-    logger.info(f'all done.  {count} update, {count_saved} saved.')
+        conn.insert_all(tmp)
+        if flag:
+            return count
 
 
-def run(uid: str, save_path: Path | str, database: Path | str):
-    if isinstance(save_path, str):
-        save_path = Path(save_path)
-    if not save_path.exists():
-        save_path.mkdir(parents=True)
+async def _run(uid: str, conn: Connect):
+    count = await _update(uid, conn)
 
+    logger.info(f'done. {count} update.')
+
+
+def run(uid: str, database: Path | str):
     conn = Connect(database)
-    conn.create_tables()
 
-    logger.info(f'start {uid} at {save_path}')
-    asyncio.run(_run(uid, save_path, conn))
+    logger.info(f'start. uid={uid}, db={database}')
+    asyncio.run(_run(uid, conn))
