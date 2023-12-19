@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "album"
+name = "bili-album"
 version = "0.1.0"
 description = ""
 authors = ["Jason Swift <anemele@outlook.com>"]

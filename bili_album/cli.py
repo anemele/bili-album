@@ -14,7 +14,7 @@ class OrderedGroup(click.Group):
 
 @click.group(cls=OrderedGroup)
 def cli():
-    """"""
+    """下载数据，更新数据库，并下载最新的图片，保存到指定位置。"""
 
 
 @cli.command()
