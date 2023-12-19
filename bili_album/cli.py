@@ -14,12 +14,13 @@ class OrderedGroup(click.Group):
 
 @click.group(cls=OrderedGroup)
 def cli():
-    """下载数据，更新数据库，并下载最新的图片，保存到指定位置。"""
+    """下载/更新哔哩哔哩用户相册（space.bilibli.com/{uid}）数据库、图片。"""
 
 
 @cli.command()
 @click.argument('config', type=Path)
 def up_db(config: Path):
+    """下载/更新数据库"""
     logger.debug(f'{config=}')
     if not config.is_file():
         logger.error(f'not a file: {config}')
@@ -35,6 +36,7 @@ def up_db(config: Path):
 @cli.command()
 @click.argument('config', type=Path)
 def up_img(config: Path):
+    """下载/更新图片"""
     logger.debug(f'{config=}')
     if not config.is_file():
         logger.error(f'not a file: {config}')

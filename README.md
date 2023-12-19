@@ -7,13 +7,12 @@
 
 ## 使用方法
 
-1. 创建虚拟环境（可选），安装依赖 `pip install -r requirements.txt` ；
-    或者直接安装 `pip install -e .`
-2. 运行 CLI 程序 `python -m bili_album`
+1. 克隆或下载本项目，安装本程序：在项目根目录执行 `pip install -e .`
+2. 运行 CLI 程序 `bili-album`
 
 CLI 程序提供两个命令 `up-db` 和 `up-img` ，分别更新数据库和下载图片。
 
-编写 `xxx.toml` 配置文件，然后 `python -m bili_album cmd xxx.toml`
+编写 `xxx.toml` 配置文件，然后 `bili-album up-db xxx.toml` 、 `bili-album up-img xxx.toml`
 
 配置示例：
 

@@ -17,6 +17,9 @@ click = "^8.1.7"
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"
 
+[tool.poetry.scripts]
+bili-album = "bili_album.cli:cli"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
