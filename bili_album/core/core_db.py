@@ -1,5 +1,6 @@
 import asyncio
 import json
+import time
 from pathlib import Path
 
 from ..db import Connect
@@ -27,7 +28,14 @@ async def request_data(uid: str):
                 content = await response.read()
 
             # 返回结果是 json 形式，取出目标数据
-            items = json.loads(content)['data']['items']
+            try:
+                items = json.loads(content)['data']['items']
+            except KeyError as e:
+                logger.debug(e)
+                continue
+
+            if items is None:
+                continue
 
             # 解析需要的数据（通常一页是 30 个）并返回
             yield filter_dict(items, ITEM_KEYS)
@@ -45,7 +53,6 @@ async def update(uid: str, database: Path):
     conn = Connect(database)
 
     last_ctime = conn.select_newest()
-    database.with_suffix(LAST_TIME).write_text(str(last_ctime))
 
     count = 0
     flag = False
@@ -68,4 +75,6 @@ async def update(uid: str, database: Path):
 
 def run(uid: str, database: Path):
     logger.info(f'start. uid={uid}, db={database}')
+
     asyncio.run(update(uid, database))
+    database.with_suffix(LAST_TIME).write_text(str(round(time.time())))
