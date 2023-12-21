@@ -34,8 +34,11 @@ async def request_data(uid: str):
                 logger.debug(e)
                 continue
 
+            # TODO ？
+            # 如果此处解析结果是 None 应该是出现了异常。
+            # 这里认为是结束了，直接退出循环
             if items is None:
-                continue
+                break
 
             # 解析需要的数据（通常一页是 30 个）并返回
             yield filter_dict(items, ITEM_KEYS)
