@@ -53,6 +53,7 @@ async def update(uid: str, database: Path):
     conn = Connect(database)
 
     last_ctime = conn.select_newest()
+    database.with_suffix(LAST_TIME).write_text(str(last_ctime))
 
     count = 0
     flag = False
@@ -77,4 +78,3 @@ def run(uid: str, database: Path):
     logger.info(f'start. uid={uid}, db={database}')
 
     asyncio.run(update(uid, database))
-    database.with_suffix(LAST_TIME).write_text(str(round(time.time())))
