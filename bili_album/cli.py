@@ -28,6 +28,8 @@ def cli(config: Path, only_db: bool):
     for up in parse(config).up:
         if up.ignore:
             continue
+        if not up.root.parent.exists():
+            up.root.parent.mkdir(exist_ok=True)
         update_database(up.uid, up.root)
         if only_db:
             continue

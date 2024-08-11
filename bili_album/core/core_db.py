@@ -5,7 +5,7 @@ from pathlib import Path
 
 from ..db import Connect
 from .api import PAGE_SIZE, api_user_album
-from .common import LAST_TIME, new_session
+from .common import new_session
 from .utils import filter_dict
 
 logger = logging.getLogger(__package__)
@@ -57,7 +57,6 @@ async def update(uid: str, database: Path):
     conn = Connect(database)
 
     last_ctime = conn.select_newest()
-    database.with_suffix(LAST_TIME).write_text(str(last_ctime))
 
     count = 0
     flag = False
