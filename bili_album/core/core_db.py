@@ -1,13 +1,14 @@
 import asyncio
 import json
-import time
+import logging
 from pathlib import Path
 
 from ..db import Connect
 from .api import PAGE_SIZE, api_user_album
 from .common import LAST_TIME, new_session
-from .log import logger
 from .utils import filter_dict
+
+logger = logging.getLogger(__package__)
 
 # 过滤数据所需的 key
 ITEM_KEYS = ('ctime', 'description', 'pictures')

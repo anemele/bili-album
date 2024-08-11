@@ -1,1 +1,3 @@
-{"python.analysis.typeCheckingMode": "basic", "files.exclude": {".venv": true, "**/__pycache__": true}}
+{
+    "python.analysis.typeCheckingMode": "basic",
+}

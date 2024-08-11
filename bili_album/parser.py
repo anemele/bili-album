@@ -11,8 +11,7 @@ def parse(config_file: Path) -> Iterable[T_CONFIG]:
 
 
 def parse_config(sth: dict[str, dict[str, Any]]) -> Iterable[T_CONFIG]:
-    for name in sth:
-        it = sth[name]
+    for name, it in sth.items():
         # 设置一个过滤器
         if it.get('ignore'):
             continue

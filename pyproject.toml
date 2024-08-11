@@ -14,7 +14,7 @@ sqlalchemy = "^2.0.23"
 click = "^8.1.7"
 
 
-[tool.poetry.group.dev.dependencies]
+[tool.poetry.group.test.dependencies]
 pytest = "^7.4.3"
 
 [tool.poetry.scripts]

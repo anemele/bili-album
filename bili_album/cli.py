@@ -1,10 +1,12 @@
+import logging
 from pathlib import Path
 
 import click
 
 from .core import update_database, update_image
-from .log import logger
 from .parser import parse
+
+logger = logging.getLogger(__package__)
 
 
 class OrderedGroup(click.Group):

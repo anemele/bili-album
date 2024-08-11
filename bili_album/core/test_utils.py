@@ -1,5 +1,6 @@
-from .utils import batched
 import pytest
+
+from .utils import batched
 
 
 def test_batched():
