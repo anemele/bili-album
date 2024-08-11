@@ -17,13 +17,15 @@ CLI 程序提供两个命令 `up-db` 和 `up-img` ，分别更新数据库和下
 配置示例：
 
 ```toml
-['bili-空美町'] # 图片保存目录名及数据库名（键名记为 name），注意引号！
-uid = 168687092
+[[up]] # 固定写法
+name = 'bili-空美町'# 图片保存目录名及数据库名，注意引号！
+uid = '168687092' # 注意引号！
 root = 'D:/Pictures/acgn' # 图片及数据库保存路径，注意引号。图片保存到 {root}/{name}/，数据库保存到 {root}/{name}.db
-['Marias马睿思']
+[[up]]
+name = 'Marias马睿思'
 uid = 474960080
 root = 'D:/Pictures/data'
-ignore = true # 可选，设置忽略为 true 则会跳过该项
+ignore = true # 可选，设置忽略为 true 则会忽略该项
 ```
 
 ## TODO

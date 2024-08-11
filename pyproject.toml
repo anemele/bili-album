@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bili-album"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
 authors = ["Jason Swift <anemele@outlook.com>"]
 readme = "README.md"
@@ -12,6 +12,7 @@ aiohttp = "^3.9.1"
 aiofiles = "^23.2.1"
 sqlalchemy = "^2.0.23"
 click = "^8.1.7"
+dataclass-binder = "^0.3.4"
 
 
 [tool.poetry.group.test.dependencies]

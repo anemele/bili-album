@@ -29,8 +29,10 @@ def up_db(config: Path):
         return
 
     try:
-        for uid, db in parse(config):
-            update_database(uid, db)
+        for up in parse(config).up:
+            if up.ignore:
+                continue
+            update_database(up.uid, up.root)
     except (KeyError, AssertionError) as e:
         logger.error(e)
 
@@ -45,7 +47,9 @@ def up_img(config: Path):
         return
 
     try:
-        for _, db in parse(config):
-            update_image(db)
+        for up in parse(config).up:
+            if up.ignore:
+                continue
+            update_image(up.root)
     except (KeyError, AssertionError) as e:
         logger.error(e)

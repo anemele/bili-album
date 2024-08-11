@@ -1,25 +1,29 @@
-import tomllib
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Optional
 
-T_CONFIG = tuple[str, Path]
-
-
-def parse(config_file: Path) -> Iterable[T_CONFIG]:
-    sth = tomllib.load(config_file.open('rb'))
-    return parse_config(sth)
+from dataclass_binder import Binder
 
 
-def parse_config(sth: dict[str, dict[str, Any]]) -> Iterable[T_CONFIG]:
-    for name, it in sth.items():
-        # 设置一个过滤器
-        if it.get('ignore'):
-            continue
+@dataclass
+class Up:
+    name: str
+    uid: str
+    root: Path
+    ignore: Optional[bool] = False
 
-        uid = it['uid']
-        assert isinstance(uid, int) or isinstance(uid, str) and uid.isdigit()
+    def __post_init__(self):
+        self.root = self.root.joinpath(f'{self.name}.db')
 
-        root = Path(it['root'])
-        db = f'{name}.db'
 
-        yield (str(uid), root / db)
+@dataclass
+class Config:
+    up: list[Up]
+
+
+def parse(config_file: Path) -> Config:
+    return Binder(Config).parse_toml(config_file)
+
+
+def parse_config(s: dict[str, Any]) -> Config:
+    return Binder(Config).bind(s)
