@@ -10,9 +10,7 @@
 1. 克隆或下载本项目，安装本程序：在项目根目录执行 `pip install .`
 2. 运行 CLI 程序 `bili-album`
 
-CLI 程序提供两个命令 `up-db` 和 `up-img` ，分别更新数据库和下载图片。
-
-编写 `xxx.toml` 配置文件，然后 `bili-album up-db xxx.toml` 、 `bili-album up-img xxx.toml`
+编写 `xxx.toml` 配置文件，然后 `bili-album xxx.toml`
 
 配置示例：
 
@@ -23,7 +21,7 @@ uid = '168687092' # 注意引号！
 root = 'D:/Pictures/acgn' # 图片及数据库保存路径，注意引号。图片保存到 {root}/{name}/，数据库保存到 {root}/{name}.db
 [[up]]
 name = 'Marias马睿思'
-uid = 474960080
+uid = '474960080'
 root = 'D:/Pictures/data'
 ignore = true # 可选，设置忽略为 true 则会忽略该项
 ```
