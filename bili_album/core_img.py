@@ -8,8 +8,8 @@ from typing import Iterable
 import aiofiles
 from aiohttp import ClientSession
 
-from ..db import Connect
 from .common import LAST_TIME, new_session
+from .db import Connect
 
 BATCH_SIZE = 100
 

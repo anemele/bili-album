@@ -1,14 +1,15 @@
 import os
 
 from .db import Connect
+from .rest import Item, Picture
 
 
 def new_data(ctime, description, img_src, img_width, img_height, img_size):
-    return dict(
+    return Item(
         ctime=ctime,
         description=description,
         pictures=[
-            dict(
+            Picture(
                 img_src=img_src,
                 img_width=img_width,
                 img_height=img_height,

@@ -1,33 +1,17 @@
 import asyncio
-import json
 import logging
-from dataclasses import dataclass
 from pathlib import Path
-from typing import AsyncGenerator
+from typing import AsyncIterable, Iterable
 
-from ..db import Connect
 from .api import PAGE_SIZE, api_user_album
 from .common import new_session
+from .db import Connect
+from .rest import REST, Data, Item
 
 logger = logging.getLogger(__package__)
 
 
-@dataclass
-class Picture:
-    img_src: str
-    img_width: str
-    img_height: str
-    img_size: str
-
-
-@dataclass
-class Item:
-    ctime: int
-    description: str
-    pictures: list[Picture]
-
-
-async def request_data(uid: str) -> AsyncGenerator[tuple[Item, ...]]:
+async def request_data(uid: str) -> AsyncIterable[Iterable[Item]]:
     async with new_session() as session:
         # 从最新的一页（0）开始爬取数据。
         page_num = 0
@@ -42,8 +26,8 @@ async def request_data(uid: str) -> AsyncGenerator[tuple[Item, ...]]:
                 content = await response.read()
 
             # 返回结果是 json 形式，取出目标数据
-            data = json.loads(content)['data']
-            items = tuple(Item(**it) for it in data['items'])
+            data: Data = REST.from_json(content).data  # type: ignore
+            items = data.items
 
             # 解析需要的数据（通常一页是 30 个）并返回
             yield items

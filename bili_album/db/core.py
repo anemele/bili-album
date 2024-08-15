@@ -5,7 +5,7 @@ from typing import Iterable
 from sqlalchemy import and_, create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from ..core.core_db import Item
+from ..rest import Item
 from .model import Base, Info, Picture
 from .utils import md5_str
 

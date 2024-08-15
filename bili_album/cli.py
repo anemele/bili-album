@@ -3,7 +3,8 @@ from pathlib import Path
 
 import click
 
-from .core import update_database, update_image
+from .core_db import run as update_database
+from .core_img import run as update_image
 from .parser import parse
 
 logger = logging.getLogger(__package__)
