@@ -24,28 +24,27 @@ class Connect:
         self._engine.dispose()
 
     @staticmethod
-    def wrap_data(data: Item) -> tuple[Info, Picture]:
-        pid = md5_str(data.ctime)
-        p = data.pictures[0]
-        return (
-            Info(ctime=data.ctime, desc=data.description, pid=pid),
-            Picture(
-                pid=pid,
-                src=p.img_src,
-                width=p.img_width,
-                height=p.img_height,
-                size=p.img_size,
+    def _wrap_data(data: Item) -> Iterable:
+        cid = md5_str(data.ctime)
+        yield Info(ctime=data.ctime, desc=data.description, cid=cid)
+        for picture in data.pictures:
+            yield Picture(
+                cid=cid,
+                pid=md5_str(picture.img_src),
+                src=picture.img_src,
+                width=picture.img_width,
+                height=picture.img_height,
+                size=picture.img_size,
                 # the valid is of `img_src`, default True, update to False if it is invalid.
                 valid=True,
-            ),
-        )
+            )
 
     def insert(self, data: Item):
-        self._session.add_all((self.wrap_data(data)))
+        self._session.add_all((self._wrap_data(data)))
         self._session.commit()
 
     def insert_all(self, data: Iterable[Item]):
-        self._session.add_all(chain.from_iterable(map(self.wrap_data, data)))
+        self._session.add_all(chain.from_iterable(map(self._wrap_data, data)))
         self._session.commit()
 
     def select_newest(self):
@@ -60,7 +59,7 @@ class Connect:
         return (
             self._session.query(Info.desc, Picture.src)
             .filter(Picture.valid)
-            .join(Info, Info.pid == Picture.pid)
+            .join(Info, Info.cid == Picture.cid)
             .all()
         )
 
@@ -68,7 +67,7 @@ class Connect:
         query = (
             self._session.query(Picture.src)
             .select_from(Picture)
-            .filter(and_(Picture.pid == Info.pid, Info.ctime > ctime))
+            .filter(and_(Picture.cid == Info.cid, Info.ctime > ctime))
             .all()
         )
         return (x[0] for x in query)

@@ -56,9 +56,9 @@ async def update(uid: str, database: Path):
                 break
 
             tmp.append(item)
+            count += len(item.pictures)
 
         conn.insert_all(tmp)
-        count += len(tmp)
         if flag:
             break
 

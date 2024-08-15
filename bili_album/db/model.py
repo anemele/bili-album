@@ -6,13 +6,14 @@ Base = declarative_base()
 
 class Info(Base):
     __tablename__ = 'info'
-    pid = Column('pid', String, nullable=False, primary_key=True)
+    cid = Column('cid', String, nullable=False, primary_key=True)
     ctime = Column('ctime', Integer, nullable=False)
     desc = Column('desc', String)
 
 
 class Picture(Base):
     __tablename__ = 'pics'
+    cid = Column('cid', String, nullable=False)
     pid = Column('pid', String, nullable=False, primary_key=True)
     src = Column('src', String, nullable=False)
     width = Column('width', Integer, nullable=False)
