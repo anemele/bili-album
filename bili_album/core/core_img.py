@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import os
+from itertools import batched
 from pathlib import Path
 from typing import Iterable
 
@@ -9,7 +10,6 @@ from aiohttp import ClientSession
 
 from ..db import Connect
 from .common import LAST_TIME, new_session
-from .utils import batched
 
 BATCH_SIZE = 100
 

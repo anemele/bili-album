@@ -6,7 +6,7 @@ page_size 是相册每页图集数目"""
 PAGE_SIZE = 30  # 默认设为 30
 
 
-def api_user_album(uid: str, page_num: int):
+def api_user_album(uid: str, page_num: int) -> str:
     return (
         'https://api.bilibili.com/x/dynamic/feed/draw/doc_list'
         f'?uid={uid}&page_num={page_num}&page_size={PAGE_SIZE}'
