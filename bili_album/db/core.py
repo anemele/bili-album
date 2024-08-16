@@ -1,3 +1,4 @@
+import hashlib
 from itertools import chain
 from pathlib import Path
 from typing import Iterable
@@ -7,7 +8,6 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from ..rest import Item
 from .model import Base, Info, Picture
-from .utils import md5_str
 
 
 class Connect:
@@ -25,16 +25,16 @@ class Connect:
 
     @staticmethod
     def _wrap_data(data: Item) -> Iterable:
-        cid = md5_str(data.ctime)
+        cid = hashlib.md5(str(data.ctime).encode()).hexdigest()
         yield Info(ctime=data.ctime, desc=data.description, cid=cid)
-        for picture in data.pictures:
+        for pic in data.pictures:
             yield Picture(
                 cid=cid,
-                pid=md5_str(picture.img_src),
-                src=picture.img_src,
-                width=picture.img_width,
-                height=picture.img_height,
-                size=picture.img_size,
+                pid=hashlib.sha1(pic.img_src.encode()).hexdigest(),
+                src=pic.img_src,
+                width=pic.img_width,
+                height=pic.img_height,
+                size=pic.img_size,
                 # the valid is of `img_src`, default True, update to False if it is invalid.
                 valid=True,
             )
