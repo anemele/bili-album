@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from dataclasses_json import dataclass_json
+from mashumaro.mixins.orjson import DataClassORJSONMixin
 
 
 @dataclass
@@ -23,9 +23,8 @@ class Data:
     items: list[Item]
 
 
-@dataclass_json
 @dataclass
-class REST:
+class REST(DataClassORJSONMixin):
     code: int
     message: str
     data: Data

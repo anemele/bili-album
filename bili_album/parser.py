@@ -1,8 +1,9 @@
+import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
 
-from dataclass_binder import Binder
+from mashumaro.mixins.toml import DataClassTOMLMixin
 
 
 @dataclass
@@ -17,13 +18,15 @@ class Up:
 
 
 @dataclass
-class Config:
+class Config(DataClassTOMLMixin):
     up: list[Up]
 
 
 def parse(config_file: Path) -> Config:
-    return Binder(Config).parse_toml(config_file)
+    with open(config_file, 'rb') as fp:
+        content = tomllib.load(fp)
+    return parse_config(content)
 
 
 def parse_config(s: dict[str, Any]) -> Config:
-    return Binder(Config).bind(s)
+    return Config.from_dict(s)

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bili-album"
-version = "0.2.2"
+version = "0.2.3"
 description = ""
 authors = ["Jason Swift <anemele@outlook.com>"]
 readme = "README.md"
@@ -12,8 +12,7 @@ aiohttp = "^3.9.1"
 aiofiles = "^23.2.1"
 sqlalchemy = "^2.0.23"
 click = "^8.1.7"
-dataclass-binder = "^0.3.4"
-dataclasses-json = "^0.6.7"
+mashumaro = { extras = ["orjson", "toml"], version = "^3.13.1" }
 
 
 [tool.poetry.group.test.dependencies]

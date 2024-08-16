@@ -6,7 +6,7 @@ from typing import AsyncIterable, Iterable
 from .api import PAGE_SIZE, api_user_album
 from .common import new_session
 from .db import Connect
-from .rest import REST, Data, Item
+from .rest import REST, Item
 
 logger = logging.getLogger(__package__)
 
@@ -26,8 +26,7 @@ async def request_data(uid: str) -> AsyncIterable[Iterable[Item]]:
                 content = await response.read()
 
             # 返回结果是 json 形式，取出目标数据
-            data: Data = REST.from_json(content).data  # type: ignore
-            items = data.items
+            items = REST.from_json(content).data.items
 
             # 解析需要的数据（通常一页是 30 个）并返回
             yield items
