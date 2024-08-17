@@ -1,5 +1,4 @@
 import asyncio
-import logging
 import os
 from itertools import batched
 from pathlib import Path
@@ -10,10 +9,9 @@ from aiohttp import ClientSession
 
 from .common import LAST_TIME, new_session
 from .db import Connect
+from .log import logger
 
 BATCH_SIZE = 100
-
-logger = logging.getLogger(__package__)
 
 
 async def download_image(session: ClientSession, url: str, path: Path | str):

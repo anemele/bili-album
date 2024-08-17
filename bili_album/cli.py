@@ -1,13 +1,11 @@
-import logging
 from pathlib import Path
 
 import click
 
 from .core_db import run as update_database
 from .core_img import run as update_image
+from .log import logger
 from .parser import parse
-
-logger = logging.getLogger(__package__)
 
 
 @click.command

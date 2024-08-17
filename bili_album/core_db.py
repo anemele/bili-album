@@ -1,14 +1,12 @@
 import asyncio
-import logging
 from pathlib import Path
 from typing import AsyncIterable, Iterable
 
 from .api import PAGE_SIZE, api_user_album
 from .common import new_session
 from .db import Connect
+from .log import logger
 from .rest import REST, Item
-
-logger = logging.getLogger(__package__)
 
 
 async def request_data(uid: str) -> AsyncIterable[Iterable[Item]]:
