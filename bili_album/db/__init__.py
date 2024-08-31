@@ -1,1 +1,1 @@
-from .core import Connect
+from .core import Connect  # noqa F401

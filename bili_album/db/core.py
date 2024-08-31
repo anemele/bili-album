@@ -12,8 +12,8 @@ from .model import Base, Info, Picture
 
 class Connect:
     def __init__(self, path: Path | str, **kw):
-        self._engine = create_engine(f'sqlite:///{path}')
-        if kw.get('IS_TEST') == True:
+        self._engine = create_engine(f"sqlite:///{path}")
+        if kw.get("IS_TEST") is not None:
             Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
 

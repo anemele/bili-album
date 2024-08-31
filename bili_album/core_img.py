@@ -17,14 +17,14 @@ BATCH_SIZE = 100
 async def download_image(session: ClientSession, url: str, path: Path | str):
     async with session.get(url) as resp:
         content = await resp.read()
-    async with aiofiles.open(path, 'wb') as fp:
+    async with aiofiles.open(path, "wb") as fp:
         await fp.write(content)
 
 
 async def manager(urls: Iterable[str], savepath: Path):
     def filter_exists(urls) -> Iterable[tuple[str, Path]]:
         for url in urls:
-            logger.debug(f'{url=}')
+            logger.debug(f"{url=}")
             path = savepath / os.path.basename(url)
             if not path.exists():
                 yield url, path
@@ -39,14 +39,14 @@ async def manager(urls: Iterable[str], savepath: Path):
                 )
             )
             count += len(status)
-            logger.info(f'done {count}')
+            logger.info(f"done {count}")
 
-    logger.info(f'all done. {count} update.')
+    logger.info(f"all done. {count} update.")
 
 
 def run(database: Path, savepath: Path | None = None):
     if savepath is None:
-        savepath = database.with_suffix('')
+        savepath = database.with_suffix("")
         if not savepath.exists():
             savepath.mkdir()
 
@@ -59,7 +59,7 @@ def run(database: Path, savepath: Path | None = None):
 
     urls = conn.select_newer_than(int(last_ctime))
 
-    logger.info(f'start. db={database}')
+    logger.info("downloading images...   with db={database}")
     asyncio.run(manager(urls, savepath))
 
     last_ctime = conn.select_newest()

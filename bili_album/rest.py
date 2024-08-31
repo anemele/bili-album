@@ -24,7 +24,7 @@ class Data:
 
 
 @dataclass
-class REST(DataClassORJSONMixin):
+class Rest(DataClassORJSONMixin):
     code: int
     message: str
     data: Data

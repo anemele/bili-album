@@ -14,7 +14,7 @@ class Up:
     ignore: Optional[bool] = False
 
     def __post_init__(self):
-        self.root = self.root.joinpath(f'{self.name}.db')
+        self.root = self.root.joinpath(f"{self.name}.db")
 
 
 @dataclass
@@ -23,7 +23,7 @@ class Config(DataClassTOMLMixin):
 
 
 def parse(config_file: Path) -> Config:
-    with open(config_file, 'rb') as fp:
+    with open(config_file, "rb") as fp:
         content = tomllib.load(fp)
     return parse_config(content)
 
