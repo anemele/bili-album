@@ -59,7 +59,7 @@ def run(database: Path, savepath: Path | None = None):
 
     urls = conn.select_newer_than(int(last_ctime))
 
-    logger.info("downloading images...   with db={database}")
+    logger.info(f"downloading images...   with db={database}")
     asyncio.run(manager(urls, savepath))
 
     last_ctime = conn.select_newest()

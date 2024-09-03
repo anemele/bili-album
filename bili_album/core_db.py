@@ -63,6 +63,6 @@ async def update(uid: str, database: Path):
 
 
 def run(uid: str, database: Path):
-    logger.info("updating database...   with uid={uid}, db={database}")
+    logger.info(f"updating database...   with uid={uid}, db={database}")
 
     asyncio.run(update(uid, database))
