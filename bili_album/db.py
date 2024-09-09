@@ -3,11 +3,30 @@ from itertools import chain
 from pathlib import Path
 from typing import Iterable
 
-from sqlalchemy import and_, create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy import Boolean, Column, Integer, Numeric, String, and_, create_engine
+from sqlalchemy.orm import declarative_base, scoped_session, sessionmaker
 
-from ..rest import Item
-from .model import Base, Info, Picture
+from .rest import Item
+
+Base = declarative_base()
+
+
+class Info(Base):
+    __tablename__ = "info"
+    cid = Column("cid", String, nullable=False, primary_key=True)
+    ctime = Column("ctime", Integer, nullable=False)
+    desc = Column("desc", String)
+
+
+class Picture(Base):
+    __tablename__ = "pics"
+    cid = Column("cid", String, nullable=False)
+    pid = Column("pid", String, nullable=False, primary_key=True)
+    src = Column("src", String, nullable=False)
+    width = Column("width", Integer, nullable=False)
+    height = Column("height", Integer, nullable=False)
+    size = Column("size", Numeric, nullable=False)
+    valid = Column("valid", Boolean, nullable=False)
 
 
 class Connect:
