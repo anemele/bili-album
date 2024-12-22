@@ -1,7 +1,8 @@
-import tomllib
 from pathlib import Path
 
-from .parser import parse_config
+import tomllib
+
+from bili_album.parser import parse_config
 
 
 def test_parse_config():
