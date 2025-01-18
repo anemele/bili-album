@@ -26,8 +26,6 @@ def main():
         return
 
     for up in parse(config).up:
-        if up.ignore:
-            continue
         if not up.root.parent.exists():
             up.root.parent.mkdir(exist_ok=True)
         update_database(up.uid, up.root)

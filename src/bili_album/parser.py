@@ -1,7 +1,7 @@
 import tomllib
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from mashumaro.mixins.toml import DataClassTOMLMixin
 
@@ -11,7 +11,6 @@ class Up:
     name: str
     uid: str
     root: Path
-    ignore: Optional[bool] = False
 
     def __post_init__(self):
         self.root = self.root.joinpath(f"{self.name}.db")
