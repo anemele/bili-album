@@ -1,5 +1,4 @@
 import asyncio
-import os.path
 from pathlib import Path
 from typing import Any, Coroutine, Iterable
 
@@ -31,7 +30,8 @@ async def download_image(session: ClientSession, urls: Iterable[str], savepath: 
     def filter_exists(urls: Iterable[str]) -> Iterable[tuple[str, Path]]:
         for url in urls:
             logger.debug(f"{url=}")
-            path = savepath / os.path.basename(url)
+            name = url.rsplit("/", 1)[1].rsplit("?", 1)[0]
+            path = savepath / name
             if not path.exists():
                 yield url, path
 
