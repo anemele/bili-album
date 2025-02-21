@@ -7,12 +7,15 @@ import aiofiles
 from aiohttp import ClientSession
 
 from .api import PAGE_SIZE, api_user_album
-from .common import INFO_JSON, LATEST_TIME, new_session, new_session_a
 from .log import logger
 from .parser import Config, Up
 from .rest import Item, dump_item, parse_response
+from .utils import new_session, new_session_a
 
 BATCH_SIZE = 100
+
+LATEST_TIME = ".latest"
+INFO_JSON = "info.json"
 
 
 def get_items(uid: str) -> Iterable[Item]:

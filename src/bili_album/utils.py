@@ -17,7 +17,3 @@ def new_session():
     sess = Session()
     sess.headers.update({"User-Agent": _FakeUA.random})
     return sess
-
-
-LATEST_TIME = ".latest"
-INFO_JSON = "info.json"
