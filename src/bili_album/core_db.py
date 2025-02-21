@@ -6,7 +6,7 @@ from .api import PAGE_SIZE, api_user_album
 from .common import new_session
 from .db import Connect
 from .log import logger
-from .rest import Rest, Item
+from .rest import Item, Rest
 
 
 async def request_data(uid: str) -> AsyncIterable[Iterable[Item]]:
