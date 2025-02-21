@@ -39,14 +39,17 @@ def get_items(uid: str) -> Iterable[Item]:
         page_num += 1
 
 
+CHUNK_SIZE = 1024
+
+
 async def _download_image(session: ClientSession, url: str, path: Path | str):
-    async with session.get(url) as resp:
-        content = await resp.read()
-    async with aiofiles.open(path, "wb") as fp:
-        await fp.write(content)
+    async with session.get(url) as resp, aiofiles.open(path, "wb") as fp:
+        chunks = resp.content.iter_chunked(CHUNK_SIZE)
+        async for chunk in chunks:
+            await fp.write(chunk)
 
 
-async def download_image(urls: Iterable[str], savepath: Path):
+async def download_image(session: ClientSession, urls: Iterable[str], savepath: Path):
     def filter_exists(urls: Iterable[str]) -> Iterable[tuple[str, Path]]:
         for url in urls:
             logger.debug(f"{url=}")
@@ -54,13 +57,8 @@ async def download_image(urls: Iterable[str], savepath: Path):
             if not path.exists():
                 yield url, path
 
-    async with new_session_a() as session:
-        tasks = (
-            _download_image(session, url, path) for url, path in filter_exists(urls)
-        )
-        futs = asyncio.as_completed(tasks)
-        for fut in futs:
-            await fut
+    tasks = (_download_image(session, url, path) for url, path in filter_exists(urls))
+    await asyncio.gather(*tasks)
 
 
 async def manage_up(up: Up, root: Path):
@@ -73,25 +71,28 @@ async def manage_up(up: Up, root: Path):
     ctimes.append(0)
     last_ctime = max(ctimes)
 
-    tasks = []
-    for item in get_items(up.uid):
-        if item.ctime <= last_ctime:
-            break
-        item_path = savepath / f"{item.ctime}"
-        item_path.mkdir(exist_ok=True)
-        (item_path / INFO_JSON).write_text(dump_item(item), encoding="utf-8")
+    async with new_session_a() as session:
+        tasks = []
+        infos = []
+        for item in get_items(up.uid):
+            if item.ctime <= last_ctime:
+                break
+            item_path = savepath / f"{item.ctime}"
+            item_path.mkdir(exist_ok=True)
+            (item_path / INFO_JSON).write_text(dump_item(item), encoding="utf-8")
 
-        urls = (pic.img_src for pic in item.pictures)
-        tasks.append(download_image(urls, item_path))
+            urls = (pic.img_src for pic in item.pictures)
+            tasks.append(download_image(session, urls, item_path))
+            infos.append(f"{up.name} - {item.ctime}")
 
-    futs = asyncio.as_completed(tasks)
-    num_task = len(tasks)
-    for i, fut in enumerate(futs, start=1):
-        try:
-            await fut
-            logger.info(f"{i}/{num_task} {up.name} - {item.ctime} done")
-        except Exception as e:
-            logger.error(e)
+        futs = asyncio.as_completed(tasks)
+        num_task = len(tasks)
+        for i, (fut, info) in enumerate(zip(futs, infos), start=1):
+            try:
+                await fut
+                logger.info(f"{i}/{num_task} {info} done")
+            except Exception as e:
+                logger.error(f"{i}/{num_task} {info} failed: {e}")
 
 
 async def _run(config: Config):
