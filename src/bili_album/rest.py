@@ -1,5 +1,4 @@
-import json
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
@@ -13,7 +12,7 @@ class Picture:
 
 
 @dataclass
-class Item:
+class Item(DataClassORJSONMixin):
     ctime: int
     description: str
     pictures: list[Picture]
@@ -36,4 +35,8 @@ def parse_response(resp: bytes) -> Rest:
 
 
 def dump_item(item: Item) -> str:
-    return json.dumps(asdict(item), ensure_ascii=False)
+    return item.to_json()
+
+
+def load_item(json_str: str) -> Item:
+    return Item.from_json(json_str)
