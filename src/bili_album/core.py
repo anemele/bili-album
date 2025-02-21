@@ -14,7 +14,6 @@ from .utils import new_session, new_session_a
 
 BATCH_SIZE = 100
 
-LATEST_TIME = ".latest"
 INFO_JSON = "info.json"
 
 
@@ -70,19 +69,14 @@ async def manage_up(up: Up, root: Path):
     logger.info(f"downloading {up.name}...")
 
     # 读取最新 item ctime ，用于判断是否需要更新
-    latest_file = savepath / f"{up.name}{LATEST_TIME}"
-    if latest_file.exists():
-        last_ctime = latest_file.read_text().strip()
-        last_ctime = int(last_ctime)
-    else:
-        last_ctime = 0
+    ctimes = [int(path.name) for path in savepath.iterdir()]
+    ctimes.append(0)
+    last_ctime = max(ctimes)
 
     tasks = []
-    _last_ctime = last_ctime
     for item in get_items(up.uid):
         if item.ctime <= last_ctime:
             break
-        _last_ctime = max(_last_ctime, item.ctime)
         item_path = savepath / f"{item.ctime}"
         item_path.mkdir(exist_ok=True)
         (item_path / INFO_JSON).write_text(dump_item(item), encoding="utf-8")
@@ -95,12 +89,9 @@ async def manage_up(up: Up, root: Path):
     for i, fut in enumerate(futs, start=1):
         try:
             await fut
-            print(f"\r{i}/{num_task}", end="")
+            logger.info(f"{i}/{num_task} {up.name} - {item.ctime} done")
         except Exception as e:
             logger.error(e)
-    if num_task > 0:
-        print()
-    latest_file.write_text(str(_last_ctime))
 
 
 async def _run(config: Config):
