@@ -26,3 +26,8 @@ uid = '123'
     )
     result = parse_config(sample)
     assert result == expected
+
+    sample = ""
+    expected = Config(root=Path.cwd(), up=[])
+    result = parse_config(sample)
+    assert result == expected

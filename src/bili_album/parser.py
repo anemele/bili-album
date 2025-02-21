@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from mashumaro.mixins.toml import DataClassTOMLMixin
@@ -12,11 +12,12 @@ class Up:
 
 @dataclass
 class Config(DataClassTOMLMixin):
-    root: Path
-    up: list[Up]
+    root: Path = field(default_factory=Path.cwd)
+    up: list[Up] = field(default_factory=list)
 
 
 def parse_config(config_toml: Path | str) -> Config:
     if isinstance(config_toml, str):
         return Config.from_toml(config_toml)
+
     return Config.from_toml(config_toml.read_text())
