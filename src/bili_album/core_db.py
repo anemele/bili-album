@@ -3,14 +3,14 @@ from pathlib import Path
 from typing import AsyncIterable, Iterable
 
 from .api import PAGE_SIZE, api_user_album
-from .common import new_session
+from .common import new_session_a
 from .db import Connect
 from .log import logger
 from .rest import Item, Rest
 
 
 async def request_data(uid: str) -> AsyncIterable[Iterable[Item]]:
-    async with new_session() as session:
+    async with new_session_a() as session:
         # 从最新的一页（0）开始爬取数据。
         page_num = 0
         while True:

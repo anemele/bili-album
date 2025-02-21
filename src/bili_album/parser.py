@@ -20,4 +20,4 @@ def parse_config(config_toml: Path | str) -> Config:
     if isinstance(config_toml, str):
         return Config.from_toml(config_toml)
 
-    return Config.from_toml(config_toml.read_text())
+    return Config.from_toml(config_toml.read_text(encoding="utf-8"))
