@@ -96,22 +96,16 @@ async def fetch_info(up: Up, savepath: Path):
         (item_path / INFO_JSON).write_text(dump_item(item), encoding="utf-8")
 
 
-async def _run(config: Config, get_img: bool = False):
+async def _run(config: Config):
     config.root.mkdir(exist_ok=True)
     tasks = list[Coroutine[Any, Any, None]]()
     for up in config.up:
         savepath = config.root / up.name
         savepath.mkdir(exist_ok=True)
         tasks.append(fetch_info(up, savepath))
+        tasks.append(fetch_image(savepath))
     await asyncio.gather(*tasks)
 
-    if get_img:
-        tasks.clear()
-        for up in config.up:
-            savepath = config.root / up.name
-            tasks.append(fetch_image(savepath))
-        await asyncio.gather(*tasks)
 
-
-def run(config: Config, get_img: bool):
-    asyncio.run(_run(config, get_img))
+def run(config: Config):
+    asyncio.run(_run(config))

@@ -6,7 +6,7 @@ logger = logging.getLogger(__package__)
 logger.setLevel(logging.INFO)
 
 formatter = logging.Formatter(
-    fmt="%(asctime)s | %(levelname)-8s | %(message)s",
+    fmt="%(asctime)s | %(levelname)s | %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
