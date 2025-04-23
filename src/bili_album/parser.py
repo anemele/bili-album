@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Sequence
 
 from mashumaro.mixins.toml import DataClassTOMLMixin
 
@@ -13,7 +14,7 @@ class Up:
 @dataclass
 class Config(DataClassTOMLMixin):
     root: Path = field(default_factory=Path.cwd)
-    up: list[Up] = field(default_factory=list)
+    up: Sequence[Up] = field(default_factory=list)
 
 
 def parse_config(config_toml: Path | str) -> Config:

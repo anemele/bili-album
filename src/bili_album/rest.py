@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Sequence
 
 from mashumaro.mixins.orjson import DataClassORJSONMixin
 
@@ -15,12 +16,12 @@ class Picture:
 class Item(DataClassORJSONMixin):
     ctime: int
     description: str
-    pictures: list[Picture]
+    pictures: Sequence[Picture]
 
 
 @dataclass
 class Data:
-    items: list[Item]
+    items: Sequence[Item]
 
 
 @dataclass
